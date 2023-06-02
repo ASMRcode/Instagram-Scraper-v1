@@ -81,42 +81,117 @@ function copyLinks() {
     URL.revokeObjectURL(url);
     downloadLink.remove();
   }
+
+/*
+----------------------------
+AUTO FOLLOW FOLLOWERS
+----------------------------
+*/
+function clickDivsOneByOne() {
+    const divs = document.querySelectorAll("div._aacl._aaco._aacw._aad6._aade");
+    let index = 0;
+    let clickCount = 0;
+  
+    function clickNextDiv() {
+      if (clickCount >= 3 || index >= divs.length) {
+        console.log("Click limit reached or no more divs to click");
+        return;
+      }
+  
+      const div = divs[index];
+      console.log(div.innerHTML); // Log the innerHTML value for debugging purposes
+  
+      if (div.innerHTML.trim() === "Follow") {
+        console.log(div);
+        div.click();
+        clickCount++;
+      }
+  
+      index++;
+      setTimeout(clickNextDiv, 3000);
+    }
+  
+    clickNextDiv();
+  }
+/*
+----------------------------
+AUTO FOLLOW FOLLOWERS/
+----------------------------
+*/
   
   // Function to check the URL and show/hide the button
   function checkURLAndToggleButton() {
     // Check if the URL ends with "/followers/"
     if (window.location.pathname.endsWith("/followers/")) {
       // Create the button if it doesn't exist
-      if (!button) {
-        button = document.createElement('button');
-        button.textContent = 'Scroll Div';
-        button.style.position = 'fixed';
-        button.style.bottom = '20px';
-        button.style.right = '20px';
-        button.style.zIndex = '9999';
-  
+      if (!scraperButton) {
+        scraperButton = document.createElement('button');
+        scraperButton.textContent = 'Snag Followers';
+        scraperButton.style.position = 'fixed';
+        scraperButton.style.top = '80px';
+        scraperButton.style.left = '34vw';
+        scraperButton.style.textAlign = 'center';
+        scraperButton.style.zIndex = '9999';
+        scraperButton.style.width = '130px';
+        scraperButton.style.height = '40px';
+        scraperButton.style.color = '#ffffff';
+        scraperButton.style.font = 'Arial'
+        scraperButton.style.fontWeight = '700'
+        scraperButton.style.background = 'rgb(56, 151, 240)';
+        scraperButton.style.borderRadius = '6px';
+        scraperButton.style.fontSize = '14px';
+        scraperButton.style.borderColor = 'rgb(56, 151, 240)'
+
+        followerButton = document.createElement('button');
+        followerButton.textContent = 'Follow All';
+        followerButton.style.position = 'fixed';
+        followerButton.style.top = '80px';
+        followerButton.style.left = '55vw';
+        followerButton.style.textAlign = 'center';
+        followerButton.style.zIndex = '9999';
+        followerButton.style.width = '130px';
+        followerButton.style.height = '40px';
+        followerButton.style.color = '#ffffff';
+        followerButton.style.font = 'Arial'
+        followerButton.style.fontWeight = '700'
+        followerButton.style.background = 'rgb(56, 151, 240)';
+        followerButton.style.borderRadius = '6px';
+        followerButton.style.fontSize = '14px';
+        followerButton.style.borderColor = 'rgb(56, 151, 240)'
+        
         // Attach a click event listener to the button
-        button.addEventListener('click', function() {
-          scrollDivByClassName('_aano');
+        scraperButton.addEventListener('click', function() {
+            scrollDivByClassName('_aano');
         });
+
+        followerButton.addEventListener('click', function() {
+            clickDivsOneByOne();
+        })
+        
+        
   
         // Append the button to the document body
-        document.body.appendChild(button);
+        document.body.appendChild(scraperButton);
+        document.body.appendChild(followerButton);
       }
     } else {
       // Remove the button if it exists
-      if (button) {
-        button.parentNode.removeChild(button);
-        button = null;
+      if (scraperButton || followerButton) {
+        scraperButton.parentNode.removeChild(scraperButton);
+        scraperButton = null;
+
+        followerButton.parentNode.removeChild(followerButton);
+        followerButton = null;
       }
     }
   }
   
   // Variable to hold the button element
-  var button = null;
+  var scraperButton = null;
+  var followerButton = null;
   
   // Check the URL initially
   checkURLAndToggleButton();
   
   // Check the URL every 3 seconds
-  setInterval(checkURLAndToggleButton, 3000);
+  setInterval(checkURLAndToggleButton, 1000);
